@@ -1,0 +1,31 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# SQLModelGen Product Requirements (PRD)
+
+This document summarizes the core requirements and design rules for the SQLModelGen project. All contributors should follow these principles:
+
+## Core Principles
+- **Automatic**: No manual schema files or TypeScript required.
+- **Configurable**: Support exclusions, naming rules, and overrides via config.
+- **Open-source-ready**: Clean structure, CLI, and documentation.
+- **Reliable**: Accurately represent the DB schema, no special-cased hacks.
+
+## Features & Rules
+- Use SQLAlchemy introspection to reflect Postgres tables, columns, foreign keys, and enums.
+- Generate one SQLModel file per table, and one Enum file per Postgres enum type.
+- All models inherit from `SQLModel, table=True` and use `Field(...)` as needed.
+- Support complex types: arrays, JSONB, enums, relationships.
+- Detect and generate both forward and reverse relationships.
+- All generated code must be idempotent (safe to re-generate).
+- Use Jinja2 templates for all code generation.
+- Configuration via `.sqlmodelgen.yaml` or `.toml` (see config rule).
+- Output must be clean, readable, and ready for FastAPI.
+
+## Future Enhancements
+- Alembic migration stubs, SQLAlchemy model output, plugin hooks.
+
+See the full PRD for details and rationale.
+

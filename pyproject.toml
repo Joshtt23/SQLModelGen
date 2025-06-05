@@ -1,0 +1,61 @@
+[project]
+name = "sqlmodelgen"
+version = "0.1.0"
+description = "CLI tool to generate SQLModel models from a Postgres database via SQLAlchemy introspection."
+authors = [
+    { name = "Finatic.dev", email = "opensource@finatic.dev" }
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "sqlmodel>=0.0.8",
+    "sqlalchemy>=2.0.0",
+    "psycopg2-binary>=2.9.0",
+    "typer>=0.15.1",
+    "jinja2>=3.0.0",
+    "PyYAML>=6.0",
+    "click==8.1.7"
+]
+
+[project.urls]
+Homepage = "https://github.com/finaticdev/sqlmodelgen"
+
+[project.scripts]
+sqlmodelgen = "sqlmodelgen.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+include = '\\.(py)$'
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+strict = true
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "black>=23.0.0",
+    "typer>=0.15.1",
+    "click==8.1.7"
+] 

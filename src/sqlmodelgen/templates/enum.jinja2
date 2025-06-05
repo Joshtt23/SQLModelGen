@@ -1,0 +1,9 @@
+{#
+Jinja2 template for Python Enum generation.
+#}
+from enum import Enum
+
+class {{ enum_name }}(str, Enum):
+{%- for value in values %}
+    {{ value.upper().replace('-', '_').replace(' ', '_') }} = "{{ value }}"
+{%- endfor %} 

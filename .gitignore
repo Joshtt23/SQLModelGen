@@ -1,0 +1,61 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+egg-info/
+.eggs/
+*.egg
+*.egg-info/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# SQLModelGen generated code
+src/sqlmodelgen/models/
+!src/sqlmodelgen/models/__init__.py
+src/sqlmodelgen/enums/
+!src/sqlmodelgen/enums/__init__.py
+test_models/
+test_enums/
+
+# Misc
+.DS_Store
+*.swp 
+sqlmodelgen.yaml
+sqlmodelgen.toml

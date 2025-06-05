@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# SQLModelGen Configuration Rules
+
+- All configuration must be provided via `.sqlmodelgen.yaml` or `.toml` file.
+- Required config keys:
+  - `database_url`: Postgres connection string
+  - `output_dir`: Where to write generated models/enums
+  - `exclude_tables`, `exclude_columns`: Lists of tables/columns to skip
+  - `enum_output_path`: Where to write enum files
+  - `field_type_overrides`: Custom type mappings (e.g. map jsonb to dict[str, Any])
+  - `relationship_mode`: e.g. minimal vs full back_populates
+- Config file must be committed (with secrets redacted or in .env)
+- Document any new config options in the README and this rule file.
+

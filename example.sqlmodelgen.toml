@@ -1,0 +1,11 @@
+# Example SQLModelGen config (TOML)
+database_url = "postgresql://user:password@localhost:5432/mydb"
+output_dir = "models"
+enum_output_path = "enums"
+exclude_tables = ["alembic_version"]
+exclude_columns = ["internal_notes"]
+relationship_mode = "full" # or "minimal"
+cleanup_old_files = true
+
+[field_type_overrides]
+jsonb = "dict[str, Any]" 

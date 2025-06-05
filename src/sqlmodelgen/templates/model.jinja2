@@ -1,0 +1,26 @@
+{#
+Jinja2 template for SQLModel model generation.
+#}
+from __future__ import annotations
+from sqlalchemy import MetaData
+metadata = MetaData()
+from sqlmodel import SQLModel, Field, Relationship
+{% for import in extra_imports %}{{ import }}
+{% endfor %}
+
+class {{ class_name }}(SQLModel, table=True):
+    __tablename__ = "{{ class_name.lower() }}"
+    __table_args__ = {"extend_existing": True}
+    metadata = metadata
+    """
+    {{ class_name }} SQLModel auto-generated from database schema.
+    Table name: {{ class_name.lower() }}
+    """
+{%- for field in fields %}
+    {{ field }}
+{%- endfor %}{% if relationships %}
+
+    # Relationships
+{%- for rel in relationships %}
+    {{ rel }}
+{%- endfor %}{% endif %} 
