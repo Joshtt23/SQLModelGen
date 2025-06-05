@@ -3,6 +3,7 @@ import yaml
 import pytest
 from sqlmodelgen.config import load_config, ConfigError, validate_config
 
+
 def test_load_yaml_config():
     config_data = {
         "database_url": "postgresql://user:pass@localhost/db",
@@ -20,6 +21,7 @@ def test_load_yaml_config():
     assert loaded["database_url"] == config_data["database_url"]
     assert loaded["output_dir"] == config_data["output_dir"]
 
+
 def test_config_missing_required_key():
     cfg = {
         "output_dir": "models",
@@ -28,6 +30,7 @@ def test_config_missing_required_key():
     with pytest.raises(ConfigError) as e:
         validate_config(cfg)
     assert "Missing required config key: database_url" in str(e.value)
+
 
 def test_config_wrong_type():
     cfg = {
@@ -38,6 +41,7 @@ def test_config_wrong_type():
     with pytest.raises(ConfigError) as e:
         validate_config(cfg)
     assert "database_url must be a string" in str(e.value)
+
 
 def test_config_invalid_relationship_mode():
     cfg = {
@@ -50,6 +54,7 @@ def test_config_invalid_relationship_mode():
         validate_config(cfg)
     assert "relationship_mode must be 'minimal' or 'full'" in str(e.value)
 
+
 def test_config_valid():
     cfg = {
         "database_url": "postgresql://user:pass@localhost/db",
@@ -61,4 +66,4 @@ def test_config_valid():
         "relationship_mode": "full",
     }
     # Should not raise
-    validate_config(cfg) 
+    validate_config(cfg)

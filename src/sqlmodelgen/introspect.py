@@ -5,21 +5,24 @@ from sqlalchemy.engine.reflection import Inspector
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 
+
 class IntrospectionError(Exception):
     pass
+
 
 class Introspector:
     """
     Handles database introspection for SQLModelGen.
     Connects to a Postgres database and extracts tables, columns, enums, and relationships.
     """
+
     def __init__(self, database_url: str):
         self.database_url = database_url
         self.engine: Optional[Engine] = None
         self.inspector: Optional[Inspector] = None
         self.metadata = MetaData()
 
-    def connect(self):
+    def connect(self) -> None:
         try:
             self.engine = create_engine(self.database_url)
             self.inspector = inspect(self.engine)
@@ -47,14 +50,16 @@ class Introspector:
         """
         if not self.engine:
             self.connect()
-        sql = text('''
+        sql = text(
+            """
             SELECT t.typname AS enum_name, e.enumlabel AS enum_value
             FROM pg_type t
             JOIN pg_enum e ON t.oid = e.enumtypid
             JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
             WHERE n.nspname = 'public'
             ORDER BY t.typname, e.enumsortorder;
-        ''')
+        """
+        )
         enums: Dict[str, List[str]] = {}
         with self.engine.connect() as conn:
             result = conn.execute(sql)
@@ -66,4 +71,4 @@ class Introspector:
         """
         Returns a list of relationships (foreign keys) for the given table.
         """
-        return self.get_foreign_keys(table_name) 
+        return self.get_foreign_keys(table_name)
