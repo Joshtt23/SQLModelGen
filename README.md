@@ -1,9 +1,9 @@
-# SQLModelGen
+# SQLModelGenerator
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/sqlmodelgen.svg)](https://pypi.org/project/sqlmodelgen/)
+[![PyPI](https://img.shields.io/pypi/v/sqlmodelgenerator.svg)](https://pypi.org/project/sqlmodelgenerator/)
 
-**SQLModelGen** is a CLI tool that automatically generates [SQLModel](https://sqlmodel.tiangolo.com/) models (including enums) directly from a Postgres database via SQLAlchemy introspection.
+**SQLModelGenerator** is a CLI tool that automatically generates [SQLModel](https://sqlmodel.tiangolo.com/) models (including enums) directly from a Postgres database via SQLAlchemy introspection.
 
 ---
 
@@ -21,7 +21,7 @@
 
 **From PyPI (recommended):**
 ```bash
-pip install sqlmodelgen
+pip install sqlmodelgenerator
 ```
 
 **For local development:**
@@ -36,16 +36,16 @@ pip install -e .[dev]
 
 ## Usage
 
-Place a config file named `sqlmodelgen.yaml`, `sqlmodelgen.yml`, or `sqlmodelgen.toml` in your project root, or specify one with `--config`.
+Place a config file named `sqlmodelgenerator.yaml`, `sqlmodelgenerator.yml`, or `sqlmodelgenerator.toml` in your project root, or specify one with `--config`.
 
 ```bash
 # With default config file in current directory
-sqlmodelgen generate
-sqlmodelgen inspect
+sqlmodelgenerator generate
+sqlmodelgenerator inspect
 
 # Or specify a config file
-sqlmodelgen generate --config path/to/config.yaml
-sqlmodelgen inspect --config path/to/config.yaml
+sqlmodelgenerator generate --config path/to/config.yaml
+sqlmodelgenerator inspect --config path/to/config.yaml
 ```
 
 ---
@@ -65,7 +65,7 @@ relationship_mode: full
 cleanup_old_files: true
 ```
 
-See `example.sqlmodelgen.yaml` or `example.sqlmodelgen.toml` for all options.
+See `example.sqlmodelgenerator.yaml` or `example.sqlmodelgenerator.toml` for all options.
 
 ---
 
@@ -91,7 +91,7 @@ class User(SQLModel, table=True):
 
 - All tests are in the `tests/` directory.
 - Run tests: `pytest`
-- Coverage: `pytest --cov=src/sqlmodelgen`
+- Coverage: `pytest --cov=src/sqlmodelgenerator`
 - Linting: `flake8 src/ tests/`
 - Type checking: `mypy src/ tests/`
 - Formatting: `black src/ tests/`
@@ -128,8 +128,8 @@ We welcome contributions of all kinds! To get started:
 
 ## Community & Support
 
-- **Issues:** [GitHub Issues](https://github.com/finaticdev/sqlmodelgen/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/finaticdev/sqlmodelgen/discussions)
+- **Issues:** [GitHub Issues](https://github.com/finaticdev/sqlmodelgenerator/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/finaticdev/sqlmodelgenerator/discussions)
 - **Contact:** opensource@finatic.dev
 
 If you have questions, ideas, or need help, open an issue or start a discussion!

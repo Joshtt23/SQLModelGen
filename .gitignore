@@ -46,16 +46,16 @@ ENV/
 *.sublime-workspace
 *.sublime-project
 
-# SQLModelGen generated code
-src/sqlmodelgen/models/
-!src/sqlmodelgen/models/__init__.py
-src/sqlmodelgen/enums/
-!src/sqlmodelgen/enums/__init__.py
+# SQLModelGenerator generated code
+src/sqlmodelgenerator/models/
+!src/sqlmodelgenerator/models/__init__.py
+src/sqlmodelgenerator/enums/
+!src/sqlmodelgenerator/enums/__init__.py
 test_models/
 test_enums/
 
 # Misc
 .DS_Store
 *.swp 
-sqlmodelgen.yaml
-sqlmodelgen.toml
+sqlmodelgenerator.yaml
+sqlmodelgenerator.toml

@@ -1,5 +1,5 @@
 import os
-from sqlmodelgen.generate import ModelGenerator
+from sqlmodelgenerator.generate import ModelGenerator
 
 
 def test_generate_enum(tmp_path) -> None:
@@ -7,7 +7,7 @@ def test_generate_enum(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     code = gen.generate_enum("UserStatus", ["active", "inactive"])
@@ -21,7 +21,7 @@ def test_generate_model_simple(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     table = {"name": "user"}
@@ -42,7 +42,7 @@ def test_generate_model_with_fk(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     table = {"name": "user"}
@@ -67,7 +67,7 @@ def test_generate_model_with_enum(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     table = {"name": "user"}
@@ -96,7 +96,7 @@ def test_generate_model_with_forward_and_reverse_relationships(tmp_path) -> None
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     all_tables = ["user", "profile"]
@@ -139,7 +139,7 @@ def test_generate_model_with_one_to_one(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     all_tables = ["user", "profile"]
@@ -182,7 +182,7 @@ def test_generate_model_with_many_to_many(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     all_tables = ["user", "group", "user_group"]
@@ -246,7 +246,7 @@ def test_generate_model(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     table = {"name": "user"}
@@ -266,7 +266,7 @@ def test_generate_model_with_array_column(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     table = {"name": "article"}
@@ -297,7 +297,7 @@ def test_generate_model_with_array_type_override(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     table = {"name": "article"}
@@ -323,7 +323,7 @@ def test_generate_model_with_nested_array(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     table = {"name": "matrix"}
@@ -346,7 +346,7 @@ def test_generate_model_with_exclude_tables_and_columns(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     # Simulate two tables, one excluded
@@ -383,7 +383,7 @@ def test_generate_model_relationship_mode_minimal_vs_full(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     all_tables = ["user", "profile"]
@@ -424,10 +424,14 @@ def test_generate_model_relationship_mode_minimal_vs_full(tmp_path) -> None:
     )
     # Minimal mode: only forward (simulate by passing rel_map=None)
     user_code_min = gen.generate_model(
-        {"name": "user"}, all_columns["user"], [], {}, rel_map=None
+        {"name": "user"}, all_columns["user"], all_fks["user"], {}, rel_map=None
     )
     profile_code_min = gen.generate_model(
-        {"name": "profile"}, all_columns["profile"], [], {}, rel_map=None
+        {"name": "profile"},
+        all_columns["profile"],
+        all_fks["profile"],
+        {},
+        rel_map=None,
     )
     assert (
         'profile: None | Profile = Relationship(back_populates="user")' in user_code_min
@@ -440,7 +444,7 @@ def test_idempotent_file_writing(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     code = "class Foo: pass\n"
@@ -465,7 +469,7 @@ def test_cleanup_old_files(tmp_path) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
     )
     # Create two files, keep only one
@@ -485,7 +489,7 @@ def test_preview_mode_writes_and_deletes(tmp_path, capsys) -> None:
         output_dir=str(tmp_path),
         enum_output_dir=str(tmp_path),
         template_dir=os.path.join(
-            os.path.dirname(__file__), "../src/sqlmodelgen/templates"
+            os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
         ),
         preview=True,
     )

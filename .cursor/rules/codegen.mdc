@@ -3,9 +3,9 @@ description:
 globs: 
 alwaysApply: false
 ---
-# SQLModelGen Code Generation Rules
+# SQLModelGenerator Code Generation Rules
 
-- All code generation must use Jinja2 templates (see `src/sqlmodelgen/templates/`).
+- All code generation must use Jinja2 templates (see `src/sqlmodelgenerator/templates/`).
 - One model file per table, one enum file per Postgres enum type.
 - All models must inherit from `SQLModel, table=True` and use `Field(...)` for columns.
 - Use type hints for all fields, including custom types for enums and JSON fields.

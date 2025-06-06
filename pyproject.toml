@@ -1,9 +1,9 @@
 [project]
-name = "sqlmodelgen"
+name = "sqlmodelgenerator"
 version = "0.1.0"
 description = "CLI tool to generate SQLModel models from a Postgres database via SQLAlchemy introspection."
 authors = [
-    { name = "Finatic.dev", email = "opensource@finatic.dev" }
+    { name = "Finatic.dev", email = "support@finatic.dev" }
 ]
 license = "MIT"
 readme = "README.md"
@@ -23,10 +23,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/finaticdev/sqlmodelgen"
+Homepage = "https://github.com/finaticdev/sqlmodelgenerator"
 
 [project.scripts]
-sqlmodelgen = "sqlmodelgen.cli:app"
+sqlmodelgenerator = "sqlmodelgenerator.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]

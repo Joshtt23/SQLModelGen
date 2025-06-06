@@ -1,13 +1,13 @@
 from typer.testing import CliRunner
 from unittest.mock import patch, MagicMock
-from sqlmodelgen.cli import app
+from sqlmodelgenerator.cli import app
 
 runner = CliRunner()
 
 
-@patch("sqlmodelgen.cli.load_config")
-@patch("sqlmodelgen.cli.Introspector")
-@patch("sqlmodelgen.cli.ModelGenerator")
+@patch("sqlmodelgenerator.cli.load_config")
+@patch("sqlmodelgenerator.cli.Introspector")
+@patch("sqlmodelgenerator.cli.ModelGenerator")
 def test_generate_command(
     mock_modelgen, mock_introspector, mock_load_config, tmp_path
 ) -> None:
@@ -58,8 +58,8 @@ def test_generate_command(
     mock_modelgen_instance.write_model_file.assert_called()
 
 
-@patch("sqlmodelgen.cli.load_config")
-@patch("sqlmodelgen.cli.Introspector")
+@patch("sqlmodelgenerator.cli.load_config")
+@patch("sqlmodelgenerator.cli.Introspector")
 def test_inspect_command(mock_introspector, mock_load_config) -> None:
     mock_load_config.return_value = {
         "database_url": "postgresql://user:pass@localhost/db"

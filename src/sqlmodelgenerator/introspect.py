@@ -12,7 +12,7 @@ class IntrospectionError(Exception):
 
 class Introspector:
     """
-    Handles database introspection for SQLModelGen.
+    Handles database introspection for SQLModelGenerator.
     Connects to a Postgres database and extracts tables, columns, enums, and relationships.
     """
 

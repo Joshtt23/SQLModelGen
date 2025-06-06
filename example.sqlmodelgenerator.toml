@@ -1,0 +1,29 @@
+# sqlmodelgenerator.toml
+
+# =========================
+# REQUIRED
+# =========================
+database_url = "postgresql://user:password@localhost:5432/mydb"
+
+# =========================
+# OPTIONAL
+# =========================
+
+[output]
+# Where to write models. Can be a file (e.g. "models.py") or a directory (e.g. "models/")
+models = "models.py"         # Default: models.py
+# Where to write enums. Can be a file (e.g. "enums.py") or a directory (e.g. "enums/")
+enums = "enums.py"           # Default: enums.py
+# If true, each model will be written to its own file in the models directory
+split_models = false         # true | false (default: false)
+# If true, each enum will be written to its own file in the enums directory
+split_enums = false          # true | false (default: false)
+
+exclude_tables = []          # List of table names to exclude (default: [])
+exclude_columns = []         # List of column names to exclude (default: [])
+
+# Override field types (Postgres type -> Python type)
+field_type_overrides = {}    # e.g. {jsonb = "dict[str, Any]", uuid = "str"}
+
+relationship_mode = "full"   # "full" | "minimal" (default: "full")
+cleanup_old_files = true     # true | false (default: true)

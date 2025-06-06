@@ -10,22 +10,22 @@ from rich.table import Table
 __version__ = "0.1.0"
 
 app = typer.Typer(
-    help="SQLModelGen: Generate SQLModel models from a Postgres database."
+    help="SQLModelGenerator: Generate SQLModel models from a Postgres database."
 )
 console = Console()
 
 
 @app.command()
 def version() -> None:
-    """Show the SQLModelGen version."""
-    console.print(f"SQLModelGen version {__version__}")
+    """Show the SQLModelGenerator version."""
+    console.print(f"SQLModelGenerator version {__version__}")
 
 
 @app.command()
 def generate(
     config: str = typer.Option(
         None,
-        help="Path to config file. If not provided, will look for sqlmodelgen.yaml/yml/toml in the current directory.",
+        help="Path to config file. If not provided, will look for sqlmodelgenerator.yaml/yml/toml in the current directory.",
     ),
     preview: bool = typer.Option(False, help="Preview changes without writing files."),
 ) -> None:
@@ -33,7 +33,11 @@ def generate(
     try:
         if config is None:
             # Look for default config files in the current working directory
-            for fname in ["sqlmodelgen.yaml", "sqlmodelgen.yml", "sqlmodelgen.toml"]:
+            for fname in [
+                "sqlmodelgenerator.yaml",
+                "sqlmodelgenerator.yml",
+                "sqlmodelgenerator.toml",
+            ]:
                 if os.path.exists(fname):
                     config = fname
                     break
@@ -46,8 +50,11 @@ def generate(
         introspector = Introspector(cfg["database_url"])
         tables = introspector.get_tables()
         enums = introspector.get_enums()
-        output_dir = cfg.get("output_dir", "models")
-        enum_output_dir = cfg.get("enum_output_path", "enums")
+        output_cfg = cfg["output"]
+        models_path = output_cfg["models"]
+        enums_path = output_cfg["enums"]
+        split_models = output_cfg["split_models"]
+        split_enums = output_cfg["split_enums"]
         type_overrides = cfg.get("field_type_overrides", {})
         exclude_tables = set(cfg.get("exclude_tables", []))
         exclude_columns = set(cfg.get("exclude_columns", []))
@@ -55,7 +62,12 @@ def generate(
         cleanup = cfg.get("cleanup_old_files", True)
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         generator = ModelGenerator(
-            output_dir, enum_output_dir, template_dir, preview=preview
+            models_path,
+            enums_path,
+            template_dir,
+            preview=preview,
+            split_models=split_models,
+            split_enums=split_enums,
         )
         tables = [t for t in tables if t not in exclude_tables]
         written_model_files: set[str] = set()
@@ -71,18 +83,22 @@ def generate(
             console.print("[yellow]No tables found to generate models for.[/yellow]")
         if not enums:
             console.print("[yellow]No enums found to generate.[/yellow]")
-        # Generate enums first
-        for enum_name, values in enums.items():
-            code = generator.generate_enum(enum_name.title().replace("_", ""), values)
-            path = os.path.join(enum_output_dir, f"{enum_name.lower()}.py")
-            if os.path.exists(path):
-                with open(path, "r", encoding="utf-8") as f:
-                    if f.read() == code:
-                        skipped_enums += 1
-                        continue
-            generator.write_enum_file(
-                enum_name.title().replace("_", ""), code, written_enum_files
+        # Generate enums
+        if split_enums:
+            for enum_name, values in enums.items():
+                code = generator.generate_enum(
+                    enum_name.title().replace("_", ""), values
+                )
+                generator.write_enum_file(
+                    enum_name.title().replace("_", ""), code, written_enum_files
+                )
+        else:
+            all_enum_code = "".join(
+                generator.generate_enum(enum_name.title().replace("_", ""), values)
+                + "\n\n"
+                for enum_name, values in enums.items()
             )
+            generator.write_enum_file_bulk(all_enum_code, written_enum_files)
         # Prepare for relationship map if full mode
         all_fks = {t: introspector.get_foreign_keys(t) for t in tables}
         all_columns = {t: introspector.get_columns(t) for t in tables}
@@ -90,44 +106,59 @@ def generate(
         if relationship_mode == "full":
             rel_map = generator.build_relationship_map(tables, all_fks, all_columns)
         # Generate models
-        for table in tables:
-            columns = [
-                c
-                for c in introspector.get_columns(table)
-                if c["name"] not in exclude_columns
-            ]
-            relationships = introspector.get_foreign_keys(table)
-            code = generator.generate_model(
-                {"name": table},
-                columns,
-                relationships,
-                enums,
-                type_overrides,
-                rel_map=rel_map if relationship_mode == "full" else None,
+        if split_models:
+            for table in tables:
+                columns = [
+                    c
+                    for c in introspector.get_columns(table)
+                    if c["name"] not in exclude_columns
+                ]
+                relationships = introspector.get_foreign_keys(table)
+                code = generator.generate_model(
+                    {"name": table},
+                    columns,
+                    relationships,
+                    enums,
+                    type_overrides,
+                    rel_map=rel_map if relationship_mode == "full" else None,
+                )
+                generator.write_model_file(
+                    table.title().replace("_", ""), code, written_model_files
+                )
+        else:
+            all_model_code = "".join(
+                generator.generate_model(
+                    {"name": table},
+                    [
+                        c
+                        for c in introspector.get_columns(table)
+                        if c["name"] not in exclude_columns
+                    ],
+                    introspector.get_foreign_keys(table),
+                    enums,
+                    type_overrides,
+                    rel_map=rel_map if relationship_mode == "full" else None,
+                )
+                + "\n\n"
+                for table in tables
             )
-            path = os.path.join(output_dir, f"{table.lower()}.py")
-            if os.path.exists(path):
-                with open(path, "r", encoding="utf-8") as f:
-                    if f.read() == code:
-                        skipped_models += 1
-                        continue
-            generator.write_model_file(
-                table.title().replace("_", ""), code, written_model_files
-            )
-        # Cleanup old files
+            generator.write_model_file_bulk(all_model_code, written_model_files)
+        # Cleanup old files (only for split mode)
         if cleanup:
-            for fname in os.listdir(output_dir):
-                fpath = os.path.join(output_dir, fname)
-                if fpath not in written_model_files and fname.endswith(".py"):
-                    deleted_files.append(fpath)
-            for fname in os.listdir(enum_output_dir):
-                fpath = os.path.join(enum_output_dir, fname)
-                if fpath not in written_enum_files and fname.endswith(".py"):
-                    deleted_files.append(fpath)
-            generator.cleanup_old_files(written_model_files, output_dir)
-            generator.cleanup_old_files(written_enum_files, enum_output_dir)
+            if split_models and os.path.isdir(models_path):
+                for fname in os.listdir(models_path):
+                    fpath = os.path.join(models_path, fname)
+                    if fpath not in written_model_files and fname.endswith(".py"):
+                        deleted_files.append(fpath)
+                generator.cleanup_old_files(written_model_files, models_path)
+            if split_enums and os.path.isdir(enums_path):
+                for fname in os.listdir(enums_path):
+                    fpath = os.path.join(enums_path, fname)
+                    if fpath not in written_enum_files and fname.endswith(".py"):
+                        deleted_files.append(fpath)
+                generator.cleanup_old_files(written_enum_files, enums_path)
         # Print summary
-        console.print(f"[green]Model and enum generation complete![/green]")
+        console.print(f"[green]Model and enum generation complete![green]")
         console.print(
             f"[bold]Models written:[/bold] {len(written_model_files)} | "
             f"[bold]skipped:[/bold] {skipped_models}"
@@ -147,13 +178,17 @@ def generate(
 def inspect(
     config: str = typer.Option(
         None,
-        help="Path to config file. If not provided, will look for sqlmodelgen.yaml/yml/toml in the current directory.",
+        help="Path to config file. If not provided, will look for sqlmodelgenerator.yaml/yml/toml in the current directory.",
     )
 ) -> None:
     """Inspect the database schema and output a preview."""
     try:
         if config is None:
-            for fname in ["sqlmodelgen.yaml", "sqlmodelgen.yml", "sqlmodelgen.toml"]:
+            for fname in [
+                "sqlmodelgenerator.yaml",
+                "sqlmodelgenerator.yml",
+                "sqlmodelgenerator.toml",
+            ]:
                 if os.path.exists(fname):
                     config = fname
                     break

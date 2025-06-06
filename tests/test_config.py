@@ -1,7 +1,7 @@
 import tempfile
 import yaml
 import pytest
-from sqlmodelgen.config import load_config, ConfigError, validate_config
+from sqlmodelgenerator.config import load_config, ConfigError, validate_config
 
 
 def test_load_yaml_config():

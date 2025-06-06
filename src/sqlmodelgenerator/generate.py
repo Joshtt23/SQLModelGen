@@ -45,13 +45,17 @@ class ModelGenerator:
 
     def __init__(
         self,
-        output_dir: str,
-        enum_output_dir: str,
+        models_path: str,
+        enums_path: str,
         template_dir: str,
         preview: bool = False,
+        split_models: bool = False,
+        split_enums: bool = False,
     ) -> None:
-        self.output_dir = output_dir
-        self.enum_output_dir = enum_output_dir
+        self.models_path = models_path
+        self.enums_path = enums_path
+        self.split_models = split_models
+        self.split_enums = split_enums
         self.env = Environment(loader=FileSystemLoader(template_dir), autoescape=False)
         self.preview = preview
 
@@ -339,12 +343,13 @@ class ModelGenerator:
     def write_model_file(
         self, class_name: str, code: str, written_files: Optional[Set[str]] = None
     ) -> None:
-        """
-        Write the generated model code to the output directory.
-        """
-        os.makedirs(self.output_dir, exist_ok=True)
+        if not self.split_models:
+            raise RuntimeError(
+                "write_model_file should only be used in split_models mode"
+            )
+        os.makedirs(self.models_path, exist_ok=True)
         path = os.path.abspath(
-            os.path.join(self.output_dir, f"{class_name.lower()}.py")
+            os.path.join(self.models_path, f"{class_name.lower()}.py")
         )
         if written_files is not None:
             written_files.add(path)
@@ -359,16 +364,36 @@ class ModelGenerator:
         with open(path, "w", encoding="utf-8") as f:
             f.write(code)
 
+    def write_model_file_bulk(
+        self, all_code: str, written_files: Optional[Set[str]] = None
+    ) -> None:
+        if self.split_models:
+            raise RuntimeError(
+                "write_model_file_bulk should only be used in single-file mode"
+            )
+        path = os.path.abspath(self.models_path)
+        if written_files is not None:
+            written_files.add(path)
+        if self.preview:
+            print(f"[PREVIEW] Would write all models to: {path}\n{all_code}\n{'-'*40}")
+            return
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                existing = f.read()
+            if existing == all_code:
+                return
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(all_code)
+
     def write_enum_file(
         self, enum_name: str, code: str, written_files: Optional[Set[str]] = None
     ) -> None:
-        """
-        Write the generated enum code to the enum output directory.
-        """
-        os.makedirs(self.enum_output_dir, exist_ok=True)
-        path = os.path.abspath(
-            os.path.join(self.enum_output_dir, f"{enum_name.lower()}.py")
-        )
+        if not self.split_enums:
+            raise RuntimeError(
+                "write_enum_file should only be used in split_enums mode"
+            )
+        os.makedirs(self.enums_path, exist_ok=True)
+        path = os.path.abspath(os.path.join(self.enums_path, f"{enum_name.lower()}.py"))
         if written_files is not None:
             written_files.add(path)
         if self.preview:
@@ -381,6 +406,27 @@ class ModelGenerator:
                 return
         with open(path, "w", encoding="utf-8") as f:
             f.write(code)
+
+    def write_enum_file_bulk(
+        self, all_code: str, written_files: Optional[Set[str]] = None
+    ) -> None:
+        if self.split_enums:
+            raise RuntimeError(
+                "write_enum_file_bulk should only be used in single-file mode"
+            )
+        path = os.path.abspath(self.enums_path)
+        if written_files is not None:
+            written_files.add(path)
+        if self.preview:
+            print(f"[PREVIEW] Would write all enums to: {path}\n{all_code}\n{'-'*40}")
+            return
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                existing = f.read()
+            if existing == all_code:
+                return
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(all_code)
 
     def cleanup_old_files(self, keep_files: Set[str], target_dir: str) -> None:
         for fname in os.listdir(target_dir):

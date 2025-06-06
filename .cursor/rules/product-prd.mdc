@@ -3,9 +3,9 @@ description:
 globs: 
 alwaysApply: false
 ---
-# SQLModelGen Product Requirements (PRD)
+# SQLModelGenerator Product Requirements (PRD)
 
-This document summarizes the core requirements and design rules for the SQLModelGen project. All contributors should follow these principles:
+This document summarizes the core requirements and design rules for the SQLModelGenerator project. All contributors should follow these principles:
 
 ## Core Principles
 - **Automatic**: No manual schema files or TypeScript required.
@@ -21,7 +21,7 @@ This document summarizes the core requirements and design rules for the SQLModel
 - Detect and generate both forward and reverse relationships.
 - All generated code must be idempotent (safe to re-generate).
 - Use Jinja2 templates for all code generation.
-- Configuration via `.sqlmodelgen.yaml` or `.toml` (see config rule).
+- Configuration via `.sqlmodelgenerator.yaml` or `.toml` (see config rule).
 - Output must be clean, readable, and ready for FastAPI.
 
 ## Future Enhancements

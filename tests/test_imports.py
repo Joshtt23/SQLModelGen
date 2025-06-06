@@ -1,2 +1,6 @@
-def test_import_sqlmodelgen():
+def test_import_sqlmodelgenerator():
+    import sqlmodelgenerator
+
+
+def test_import_sqlmodelgenerator():
     pass

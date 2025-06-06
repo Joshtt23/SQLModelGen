@@ -3,9 +3,9 @@ description:
 globs: 
 alwaysApply: false
 ---
-# SQLModelGen Configuration Rules
+# SQLModelGenerator Configuration Rules
 
-- All configuration must be provided via `.sqlmodelgen.yaml` or `.toml` file.
+- All configuration must be provided via `.sqlmodelgenerator.yaml` or `.toml` file.
 - Required config keys:
   - `database_url`: Postgres connection string
   - `output_dir`: Where to write generated models/enums

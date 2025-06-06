@@ -1,9 +1,9 @@
 from unittest.mock import MagicMock, patch
-from sqlmodelgen.introspect import Introspector
+from sqlmodelgenerator.introspect import Introspector
 
 
-@patch("sqlmodelgen.introspect.create_engine")
-@patch("sqlmodelgen.introspect.inspect")
+@patch("sqlmodelgenerator.introspect.create_engine")
+@patch("sqlmodelgenerator.introspect.inspect")
 def test_get_tables_and_columns(mock_inspect, mock_create_engine):
     mock_engine = MagicMock()
     mock_inspector = MagicMock()
@@ -22,8 +22,8 @@ def test_get_tables_and_columns(mock_inspect, mock_create_engine):
     assert columns[1]["name"] == "name"
 
 
-@patch("sqlmodelgen.introspect.create_engine")
-@patch("sqlmodelgen.introspect.inspect")
+@patch("sqlmodelgenerator.introspect.create_engine")
+@patch("sqlmodelgenerator.introspect.inspect")
 def test_get_foreign_keys(mock_inspect, mock_create_engine):
     mock_engine = MagicMock()
     mock_inspector = MagicMock()
@@ -42,8 +42,8 @@ def test_get_foreign_keys(mock_inspect, mock_create_engine):
     assert fks[0]["referred_table"] == "profile"
 
 
-@patch("sqlmodelgen.introspect.create_engine")
-@patch("sqlmodelgen.introspect.inspect")
+@patch("sqlmodelgenerator.introspect.create_engine")
+@patch("sqlmodelgenerator.introspect.inspect")
 def test_get_enums(mock_inspect, mock_create_engine):
     mock_engine = MagicMock()
     mock_create_engine.return_value = mock_engine
@@ -55,7 +55,7 @@ def test_get_enums(mock_inspect, mock_create_engine):
         MagicMock(enum_name="role", enum_value="admin"),
     ]
     mock_inspect.return_value = MagicMock()
-    from sqlmodelgen.introspect import Introspector
+    from sqlmodelgenerator.introspect import Introspector
 
     introspector = Introspector("postgresql://user:pass@localhost/db")
     enums = introspector.get_enums()

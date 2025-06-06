@@ -5,7 +5,9 @@ import os
 def test_model_template_renders():
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(
-            os.path.join(os.path.dirname(__file__), "../src/sqlmodelgen/templates")
+            os.path.join(
+                os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
+            )
         )
     )
     template = env.get_template("model.jinja2")
@@ -18,7 +20,9 @@ def test_model_template_renders():
 def test_enum_template_renders():
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(
-            os.path.join(os.path.dirname(__file__), "../src/sqlmodelgen/templates")
+            os.path.join(
+                os.path.dirname(__file__), "../src/sqlmodelgenerator/templates"
+            )
         )
     )
     template = env.get_template("enum.jinja2")
